@@ -41,3 +41,5 @@ scripts/ltsugar.m4
 scripts/ltversion.m4
 scripts/lt~obsolete.m4
 scripts/missing
+.deps
+libtool
