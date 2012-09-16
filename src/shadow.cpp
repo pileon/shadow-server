@@ -41,9 +41,26 @@
 
 /* **************************************************************** */
 
+namespace
+{
+	bool init(int argc, char* argv[])
+	{
+		return true;
+	}
+
+	void clean()
+	{
+	}
+}
+
+/* **************************************************************** */
+
 int shadow::main(int argc, char* argv[])
 {
-	std::cout << "Hello world!\n";
+	if (!init(argc, argv))
+		return 1;
+
+	return 0;
 }
 
 /* **************************************************************** */
