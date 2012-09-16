@@ -37,7 +37,7 @@
 
 AUTOMAKE_OPTIONS = subdir-objects
 
-SUBDIRS = host net
+SUBDIRS = host
 
 LDFLAGS_BOOST = \
 	$(BOOST_SYSTEM_LDFLAGS) \
@@ -58,9 +58,6 @@ AM_CPPFLAGS = $(BOOST_CPPFLAGS)
 AM_LDFLAGS  = $(LDFLAGS_BOOST)
 LIBS       += $(LIBS_BOOST)
 LIBS       += host/libhost.a
-
-ACLOCAL_AMFLAGS  = -I scripts
-AUTOMAKE_OPTIONS = subdir-objects
 
 ######################################################################
 
