@@ -22,3 +22,11 @@ Makefile.in
 /depcomp
 /install-sh
 /missing
+
+## Local
+/config.*
+Makefile
+src/host/autoconf.*
+src/host/stamp-h1
+.dirstamp
+src/shadow
