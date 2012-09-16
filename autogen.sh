@@ -44,6 +44,7 @@ automake --foreign --add-missing
 
 if [ "$1" = "debug" ]; then
 	echo "Running './configure' with parameters:"
+	echo "    --with-gcc=4.7"
 	echo "    --enable-gdb3"
 	echo "    --enable-warnings"
 	echo "    --disable-opt"
@@ -51,7 +52,7 @@ if [ "$1" = "debug" ]; then
 	echo "    --with-debug"
 	echo "    --with-trace"
 	echo "    --enable-maintainer-mode"
-	./configure --enable-gdb3 --enable-warnings --disable-opt --with-mtrace --with-debug --with-trace --enable-maintainer-mode
+	./configure --with-gcc=4.7 --enable-gdb3 --enable-warnings --disable-opt --with-mtrace --with-debug --with-trace --enable-maintainer-mode
 else
 	echo "Running './configure' without parameters"
 	./configure
