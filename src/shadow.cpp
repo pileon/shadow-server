@@ -60,6 +60,9 @@ int shadow::main(int argc, char* argv[])
 	if (!init(argc, argv))
 		return 1;
 
+
+	clean();
+
 	return 0;
 }
 
