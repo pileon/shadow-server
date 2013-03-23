@@ -48,30 +48,33 @@ AC_CONFIG_FILES([Makefile src/Makefile src/host/Makefile])
 dnl ######################################################################
 dnl # Checks for programs
 
-dnl # First check which GCC version is wanted
-AC_ARG_WITH(gcc,
-  [  --with-gcc=<version>    Use GCC (gcc and g++) of the specified version],
-  [if test "$withval" != yes; then
-     AC_PROG_CXX([g++-$withval g++ c++])
-     AC_PROG_CC([gcc-$withval gcc])
-   elif test "$withval" = yes; then
-     AC_PROG_CXX([g++ c++])
-     AC_PROG_CC([gcc])
-   fi])
+dnl # dnl # First check which GCC version is wanted
+dnl # AC_ARG_WITH(gcc,
+dnl #   [  --with-gcc=<version>    Use GCC (gcc and g++) of the specified version],
+dnl #   [if test "$withval" != yes; then
+dnl #      AC_PROG_CXX([g++-$withval g++ c++])
+dnl #      AC_PROG_CC([gcc-$withval gcc])
+dnl #    elif test "$withval" = yes; then
+dnl #      AC_PROG_CXX([g++ c++])
+dnl #      AC_PROG_CC([gcc])
+dnl #    fi])
 
-AC_ARG_WITH(clang,
-  [  --with-clang            Use Clang (clang and clang++) as the compiler],
-  [if test "$withval" = yes; then
-     AC_PROG_CXX([clang++])
-     AC_PROG_CC([clang])
-   fi])
+dnl # AC_ARG_WITH(clang,
+dnl #   [  --with-clang            Use Clang (clang and clang++) as the compiler],
+dnl #   [if test "$withval" = yes; then
+dnl #      AC_PROG_CXX([clang++])
+dnl #      AC_PROG_CC([clang])
+dnl #    fi])
 
-if [ test -z "$ac_cv_prog_CXX" ]; then
-  AC_PROG_CXX
-fi
-if [ test -z "$ac_cv_prog_CC" ]; then
-  AC_PROG_CC
-fi
+dnl # if [ test -z "$ac_cv_prog_CXX" ]; then
+dnl #   echo "No C++ compiler found, searching for one"
+dnl #   AC_PROG_CXX
+dnl # fi
+dnl # if [ test -z "$ac_cv_prog_CC" ]; then
+dnl #   AC_PROG_CC
+dnl # fi
+
+AC_PROG_CXX
 
 AC_PROG_CXX_C_O
 AC_PROG_CXXCPP
