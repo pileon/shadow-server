@@ -39,7 +39,7 @@ AC_INIT(shadow-server, [0.1.0], [shadow@pileborg.se], , [https://github.com/pile
 AC_CONFIG_AUX_DIR([scripts])
 AC_CONFIG_MACRO_DIR([scripts])
 AM_INIT_AUTOMAKE
-AC_COPYRIGHT([Parts of the configure script is copyright (C) 2012, Joachim Pileborg and individual contributors.])
+AC_COPYRIGHT([Parts of the configure script is copyright (C) 2012, 2013, Joachim Pileborg and individual contributors.])
 AC_CONFIG_SRCDIR([src/shadow.h])
 AC_CONFIG_HEADERS([src/host/autoconf.h])
 dnl AC_CONFIG_LIBOBJ_DIR([src/libobj])
@@ -74,7 +74,8 @@ dnl # if [ test -z "$ac_cv_prog_CC" ]; then
 dnl #   AC_PROG_CC
 dnl # fi
 
-AC_PROG_CXX
+AC_PROG_CXX([clang++ g++ c++])
+AC_PROG_CC([clang gcc cc])
 
 AC_PROG_CXX_C_O
 AC_PROG_CXXCPP
@@ -119,6 +120,7 @@ dnl # Checks for compiler characteristics
 AC_C_BACKSLASH_A
 AC_C_BACKSLASH_E
 
+cxx_have_ggdb3=no
 AC_ARG_ENABLE([gdb3],
   [  --enable-gdb3           enable higher debug level option to the compiler],
   [if test $enableval = yes; then
@@ -131,19 +133,21 @@ fi
 
 AC_CHECK_CXX_ARGUMENT([-std=c++11], [], [AC_CHECK_CXX_ARGUMENT([-std=c++0x])])
 
+AC_CHECK_CXX_ARGUMENT([-stdlib=libc++])
+
 AC_CHECK_CXX_ARGUMENT(-pipe)
 
 AC_ARG_ENABLE([warnings],
   [  --enable-warnings       enable extra warnings from the compiler],
   [if test $enableval = yes; then
-     AC_CHECK_CXX_ARGUMENT(-Wall)
-     AC_CHECK_CXX_ARGUMENT(-Wextra)
-     AC_CHECK_CXX_ARGUMENT(-Weffc++)
-     AC_CHECK_CXX_ARGUMENT(-Wconversion)
-     AC_CHECK_CXX_ARGUMENT(-Wsign-conversion)
-     AC_CHECK_CXX_ARGUMENT(-Woverloaded-virtual)
-     AC_CHECK_CXX_ARGUMENT(-Weverything)
-     AC_CHECK_CXX_ARGUMENT(-pedantic)
+     AC_CHECK_CXX_ARGUMENT([-Wall])
+     AC_CHECK_CXX_ARGUMENT([-Wextra])
+     AC_CHECK_CXX_ARGUMENT([-Weffc++])
+     AC_CHECK_CXX_ARGUMENT([-Wconversion])
+     AC_CHECK_CXX_ARGUMENT([-Wsign-conversion])
+     AC_CHECK_CXX_ARGUMENT([-Woverloaded-virtual])
+     AC_CHECK_CXX_ARGUMENT([-Weverything])
+     AC_CHECK_CXX_ARGUMENT([-Wpedantic], , [AC_CHECK_CXX_ARGUMENT([-pedantic])])
    fi])
 
 AC_ARG_ENABLE([opt],
@@ -158,7 +162,7 @@ AC_ARG_ENABLE([profiling],
      :
    fi])
 
-AC_MSG_CHECKING([if ${CXX-g++} supports __PRETTY_FUNCTION__])
+AC_MSG_CHECKING([if ${CXX-c++} supports __PRETTY_FUNCTION__])
 AC_LINK_IFELSE(
   [AC_LANG_PROGRAM(
     [
@@ -172,7 +176,7 @@ AC_LINK_IFELSE(
      [Define to 1 if the compiler supports the __FUNCTION__ literal])],
   [AC_MSG_RESULT(no)])
 
-AC_MSG_CHECKING([if ${CXX-g++} supports __FUNCTION__])
+AC_MSG_CHECKING([if ${CXX-c++} supports __FUNCTION__])
 AC_LINK_IFELSE(
   [AC_LANG_PROGRAM(
     [
@@ -186,7 +190,7 @@ AC_LINK_IFELSE(
      [Define to 1 if the compiler supports the __func__ variable])],
   [AC_MSG_RESULT(no)])
 
-AC_MSG_CHECKING([if ${CXX-g++} supports __func__])
+AC_MSG_CHECKING([if ${CXX-c++} supports __func__])
 AC_LINK_IFELSE(
   [AC_LANG_PROGRAM(
     [
@@ -200,7 +204,7 @@ AC_LINK_IFELSE(
      [Define to 1 if the compiler supports the __func__ variable])],
   [AC_MSG_RESULT(no)])
 
-AC_MSG_CHECKING([if ${CXX-g++} supports nullptr])
+AC_MSG_CHECKING([if ${CXX-c++} supports nullptr])
 AC_LINK_IFELSE(
   [AC_LANG_PROGRAM(
     [],
@@ -209,10 +213,10 @@ AC_LINK_IFELSE(
     ]])],
   [AC_MSG_RESULT(yes)
    AC_DEFINE(HAVE_NULLPTR, 1,
-     [Define to 1 if the compiler supports the nullptr C++0x constant])],
+     [Define to 1 if the compiler supports the nullptr C++11 constant])],
   [AC_MSG_RESULT(no)])
 
-AC_MSG_CHECKING([if ${CXX-g++} supports computed gotos])
+AC_MSG_CHECKING([if ${CXX-c++} supports computed gotos])
 AC_COMPILE_IFELSE(
   [AC_LANG_PROGRAM(
     [],
@@ -228,7 +232,7 @@ AC_COMPILE_IFELSE(
      [Define to 1 if the compilers supports computed gotos])],
   [AC_MSG_RESULT(no)])
 
-AC_MSG_CHECKING([if ${CXX-g++} supports Unicode string literals])
+AC_MSG_CHECKING([if ${CXX-c++} supports Unicode string literals])
 AC_COMPILE_IFELSE(
   [AC_LANG_PROGRAM(
     [],
@@ -242,7 +246,7 @@ AC_COMPILE_IFELSE(
      [Define to 1 if the compiler supports C++11 unicode string literals])],
   [AC_MSG_RESULT(no)])
 
-AC_MSG_CHECKING([if ${CXX-g++} supports raw string literals])
+AC_MSG_CHECKING([if ${CXX-c++} supports raw string literals])
 AC_COMPILE_IFELSE(
   [AC_LANG_PROGRAM(
     [],
@@ -290,8 +294,8 @@ AC_ARG_WITH(mtrace,
 
 dnl ######################################################################
 
-BOOST_REQUIRE([1.48.0],
-        [AC_MSG_ERROR([The Raven requires Boost version 1.48.0 or higher.])])
+BOOST_REQUIRE([1.53.0],
+        [AC_MSG_ERROR([The Raven requires Boost version 1.53.0 or higher.])])
 
 BOOST_SYSTEM
 BOOST_PROGRAM_OPTIONS
@@ -306,6 +310,8 @@ AC_ARG_WITH(debug,
   [  --with-debug            #define DEBUG 1],
   [if test "$withval" = yes; then
      AC_DEFINE(DEBUG, 1, [Define to 1 to enable extra debugging])
+   else
+     AC_DEFINE(NDEBUG, 1, [Define to 1 to disable extra debugging])
    fi])
 
 AC_ARG_WITH(trace,
