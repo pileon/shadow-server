@@ -43,3 +43,4 @@ scripts/lt~obsolete.m4
 scripts/missing
 .deps
 libtool
+build/
