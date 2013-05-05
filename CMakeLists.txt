@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 2.6)
 
 project(Shadow_Server CXX)
 
+include(CheckCXXSourceCompiles)
+
 ######################################################################
 # Flag handling
 include(CheckCXXCompilerFlag)
@@ -21,7 +23,7 @@ check_cxx_compiler_flag(-Weffc++             HAS_WARNING_EFFCXX)
 check_cxx_compiler_flag(-Wconversion         HAS_WARNING_CONVERSION)
 check_cxx_compiler_flag(-Wsign-conversion    HAS_WARNING_SIGN_CONVERSION)
 check_cxx_compiler_flag(-Woverloaded-virtual HAS_WARNING_OVERLOADED_VIRTUAL)
-check_cxx_compiler_flag(-Weverything         HAS_WARNING_EVERYTHING)
+# check_cxx_compiler_flag(-Weverything         HAS_WARNING_EVERYTHING)
 
 check_cxx_compiler_flag(-Wpedantic HAS_WARNING_WPEDANTIC)
 if(NOT HAS_WARNING_WPEDANTIC)
@@ -46,9 +48,9 @@ endif()
 if(HAS_WARNING_OVERLOADED_VIRTUAL)
 	set(CXX_WARNING_FLAGS "${CXX_WARNING_FLAGS} -Woverloaded-virtual")
 endif()
-if(HAS_WARNING_EVERYTHING)
-	set(CXX_WARNING_FLAGS "${CXX_WARNING_FLAGS} -Weverything")
-endif()
+# if(HAS_WARNING_EVERYTHING)
+# 	set(CXX_WARNING_FLAGS "${CXX_WARNING_FLAGS} -Weverything")
+# endif()
 if(HAS_WARNING_WPEDANTIC)
 	set(CXX_WARNING_FLAGS "${CXX_WARNING_FLAGS} -Wpedantic")
 endif()
@@ -81,6 +83,28 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_WARNING_FLAGS}")
 ######################################################################
 # TODO: Other compiler specifics (`nullptr` etc.)
 
+CHECK_CXX_SOURCE_COMPILES("int main() { void* p = nullptr; }"
+	HAVE_NULLPTR
+	FAIL_REGEX "use of undeclared identifier 'nullptr'")
+if(NOT HAVE_NULLPTR)
+	message(FATAL_ERROR "Shadow World server needs nullptr")
+endif()
+
+# CHECK_CXX_SOURCE_COMPILES("int main() { const char* f = __PRETTY_FUNCTION__; }")
+# CHECK_CXX_SOURCE_COMPILES("int main() { const char* f = __FUNCTION__; }")
+# CHECK_CXX_SOURCE_COMPILES("int main() { const char* f = __func__; }")
+
+CHECK_CXX_SOURCE_COMPILES("int main() { char c1 = u8'a'; char16_t c2 = u'a'; char32_t c3 = U'a'; }"
+	HAVE_UNICODE_LITERALS
+	FAIL_REGEX "use of undeclared identifier 'u8'"
+	FAIL_REGEX "use of undeclared identifier 'u'"
+	FAIL_REGEX "use of undeclared identifier 'U'"
+	FAIL_REGEX "unknown type name 'char16_t'"
+	FAIL_REGEX "unknown type name 'char32_t'")
+if(HAVE_UNICODE_LITERALS)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVE_UNICODE_LITERALS")
+endif()
+
 ######################################################################
 # TODO: Header files
 
@@ -89,6 +113,14 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_WARNING_FLAGS}")
 
 ######################################################################
 # TODO: Libraries
+
+# Check if the "c++abi" library is needed
+CHECK_CXX_SOURCE_COMPILES("#include <iostream>\nint main() { std::cout << 'c'; }"
+	LIBCXXABI_NOT_NEEDED
+	FAIL_REGEX "undefined reference to symbol '__gxx_personality_v0'")
+if(NOT LIBCXXABI_NOT_NEEDED)
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lc++abi")
+endif()
 
 ######################################################################
 # TODO: Library functions
