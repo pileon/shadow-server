@@ -43,7 +43,7 @@
 
 namespace
 {
-	bool init(int argc, char* argv[])
+	bool init(int /*argc*/, char* /*argv*/[])
 	{
 		return true;
 	}
@@ -62,10 +62,6 @@ int shadow::main(int argc, char* argv[])
 
 	std::cout << "Hello world\n";
 
-	char     s1[] = u8"\u2018";
-	char16_t s2[] = u"\u2018";
-	char32_t s3[] = U"\u2018";
- 
  	clean();
 
 	return 0;
