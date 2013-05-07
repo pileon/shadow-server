@@ -132,12 +132,17 @@ endif()
 # TODO: System services (mtrace etc.)
 
 ######################################################################
-# TODO: Boost
+# Boost
 
 include(FindBoost)
 
-find_package(Boost 1.53.0)
-# TODO: Check for specific components
+set(BOOST_ROOT "/usr/local")
+
+find_package(Boost 1.53.0 COMPONENTS system program_options log filesystem)
+
+if(Boost_FOUND)
+	include_directories(${Boost_INCLUDE_DIRS})
+endif()
 
 ######################################################################
 # Subdirectories
