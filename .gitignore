@@ -14,33 +14,5 @@
 # http://www.gnu.org/software/automake
 Makefile.in
 
-# http://www.gnu.org/software/autoconf
-/autom4te.cache
-/aclocal.m4
-/compile
-/configure
-/depcomp
-/install-sh
-/missing
-
 ## Local
-/config.*
-Makefile
-src/host/autoconf.*
-src/host/stamp-h1
-.dirstamp
-src/shadow
-scripts/config.guess
-scripts/config.sub
-scripts/depcomp
-scripts/install-sh
-scripts/libtool.m4
-scripts/ltmain.sh
-scripts/ltoptions.m4
-scripts/ltsugar.m4
-scripts/ltversion.m4
-scripts/lt~obsolete.m4
-scripts/missing
-.deps
-libtool
 build/
