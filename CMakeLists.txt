@@ -105,6 +105,9 @@ if(HAVE_UNICODE_LITERALS)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVE_UNICODE_LITERALS")
 endif()
 
+# TODO: Raw string literals
+# TODO: Computed gotos?
+
 ######################################################################
 # TODO: Header files
 
@@ -130,6 +133,11 @@ endif()
 
 ######################################################################
 # TODO: Boost
+
+include(FindBoost)
+
+find_package(Boost 1.53.0)
+# TODO: Check for specific components
 
 ######################################################################
 # Subdirectories
