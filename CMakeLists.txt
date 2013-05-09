@@ -5,6 +5,7 @@ project(Shadow_Server CXX)
 set(Shadow_Server_VERSION_MAJOR 0)
 set(Shadow_Server_VERSION_MINOR 1)
 set(Shadow_Server_VERSION_PATCH 0)
+set(Shadow_Server_VERSION_EXTRA "")
 
 include(CheckCXXSourceCompiles)
 
@@ -158,7 +159,7 @@ if(NOT Boost_LOG_FOUND)
 endif()
 
 if(Boost_FOUND)
-	include_directories(${Boost_INCLUDE_DIRS})
+	include_directories("${Boost_INCLUDE_DIRS}")
 endif()
 
 find_path(
@@ -173,3 +174,6 @@ endif()
 # Subdirectories
 add_subdirectory(src)
 
+configure_file(
+	"${PROJECT_SOURCE_DIR}/src/host/autoconf.h.in"
+	"${PROJECT_SOURCE_DIR}/src/host/autoconf.h")
