@@ -39,7 +39,7 @@
 if(UNIX)
 	list(APPEND SOURCES host/posix/main.cpp)
 endif()
-list(APPEND SOURCES shadow.cpp)
+list(APPEND SOURCES shadow.cpp log.cpp)
 
 # Targets
 add_executable(shadow ${SOURCES})
