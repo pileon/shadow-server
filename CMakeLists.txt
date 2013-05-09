@@ -156,13 +156,22 @@ set(BOOST_ROOT "/usr/local")
 find_package(Boost 1.53.0 COMPONENTS program_options log)
 
 if(NOT Boost_LOG_FOUND)
-	message(FATAL_ERROR "Shadow World needs Boost.Log")
+	message(FATAL_ERROR "Boost.Log not found")
 endif()
 
 if(Boost_FOUND)
 	include_directories(${Boost_INCLUDE_DIRS})
 endif()
 
+find_path(
+	Boost_ASIO_PATH
+	NAMES boost/asio_kalle.hpp
+	PATHS ${Boost_INCLUDE_DIRS})
+if(Boost_ASIO_PATH STREQUAL "Boost_ASIO_PATH-NOTFOUND")
+	message(FATAL_ERROR "Boost.ASIO not found")
+endif()
+
 ######################################################################
 # Subdirectories
 add_subdirectory(src)
+
