@@ -88,7 +88,7 @@ CHECK_CXX_SOURCE_COMPILES("int main() { void* p = nullptr; }"
 	HAVE_NULLPTR
 	FAIL_REGEX "use of undeclared identifier 'nullptr'")
 if(NOT HAVE_NULLPTR)
-	message(FATAL_ERROR "Shadow World server needs nullptr")
+	message(FATAL_ERROR "no `nullptr`")
 endif()
 
 # CHECK_CXX_SOURCE_COMPILES("int main() { const char* f = __PRETTY_FUNCTION__; }")
@@ -107,9 +107,6 @@ CHECK_CXX_SOURCE_COMPILES("int main() { char c1[] = u8\"a\"; char16_t c2[] = u\"
 	FAIL_REGEX "‘u8’ was not declared in this scope"
 	FAIL_REGEX "‘char16_t’ was not declared in this scope"
 	FAIL_REGEX "‘char32_t’ was not declared in this scope")
-if(HAVE_UNICODE_LITERALS)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVE_UNICODE_LITERALS=1")
-endif()
 
 CHECK_CXX_SOURCE_COMPILES("int main() { char s[] = R\"delim(string)delim\"; }"
 	HAVE_RAW_STRING_LITERALS
@@ -117,9 +114,6 @@ CHECK_CXX_SOURCE_COMPILES("int main() { char s[] = R\"delim(string)delim\"; }"
 	FAIL_REGEX "use of undeclared identifier 'R'"
 	# g++
 	FAIL_REGEX "‘R’ was not declared in this scope")
-if(HAVE_RAW_STRING_LITERALS)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVE_RAW_STRING_LITERALS=1")
-endif()
 
 # TODO: Computed gotos?
 
@@ -165,7 +159,7 @@ endif()
 
 find_path(
 	Boost_ASIO_PATH
-	NAMES boost/asio_kalle.hpp
+	NAMES boost/asio.hpp
 	PATHS ${Boost_INCLUDE_DIRS})
 if(Boost_ASIO_PATH STREQUAL "Boost_ASIO_PATH-NOTFOUND")
 	message(FATAL_ERROR "Boost.ASIO not found")
