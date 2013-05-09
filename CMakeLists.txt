@@ -97,18 +97,25 @@ endif()
 
 CHECK_CXX_SOURCE_COMPILES("int main() { char c1[] = u8\"a\"; char16_t c2[] = u\"a\"; char32_t c3[] = U\"a\"; }"
 	HAVE_UNICODE_LITERALS
+	# clang++
 	FAIL_REGEX "use of undeclared identifier 'u8'"
 	FAIL_REGEX "use of undeclared identifier 'u'"
 	FAIL_REGEX "use of undeclared identifier 'U'"
 	FAIL_REGEX "unknown type name 'char16_t'"
-	FAIL_REGEX "unknown type name 'char32_t'")
+	FAIL_REGEX "unknown type name 'char32_t'"
+	# g++
+	FAIL_REGEX "‘u8’ was not declared in this scope"
+	FAIL_REGEX "‘char16_t’ was not declared in this scope"
+	FAIL_REGEX "‘char32_t’ was not declared in this scope")
 if(HAVE_UNICODE_LITERALS)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVE_UNICODE_LITERALS=1")
 endif()
 
 CHECK_CXX_SOURCE_COMPILES("int main() { char s[] = R\"delim(string)delim\"; }"
 	HAVE_RAW_STRING_LITERALS
+	# clang++
 	FAIL_REGEX "use of undeclared identifier 'R'"
+	# g++
 	FAIL_REGEX "‘R’ was not declared in this scope")
 if(HAVE_RAW_STRING_LITERALS)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVE_RAW_STRING_LITERALS=1")
