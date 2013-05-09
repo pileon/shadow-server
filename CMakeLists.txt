@@ -103,10 +103,17 @@ CHECK_CXX_SOURCE_COMPILES("int main() { char c1[] = u8\"a\"; char16_t c2[] = u\"
 	FAIL_REGEX "unknown type name 'char16_t'"
 	FAIL_REGEX "unknown type name 'char32_t'")
 if(HAVE_UNICODE_LITERALS)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVE_UNICODE_LITERALS")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVE_UNICODE_LITERALS=1")
 endif()
 
-# TODO: Raw string literals
+CHECK_CXX_SOURCE_COMPILES("int main() { char s[] = R\"delim(string)delim\"; }"
+	HAVE_RAW_STRING_LITERALS
+	FAIL_REGEX "use of undeclared identifier 'R'"
+	FAIL_REGEX "‘R’ was not declared in this scope")
+if(HAVE_RAW_STRING_LITERALS)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVE_RAW_STRING_LITERALS=1")
+endif()
+
 # TODO: Computed gotos?
 
 ######################################################################
