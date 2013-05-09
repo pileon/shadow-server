@@ -40,6 +40,11 @@ cmake_minimum_required(VERSION 2.6)
 
 project(Shadow_Server CXX)
 
+set(Shadow_Server_VERSION_MAJOR 0)
+set(Shadow_Server_VERSION_MINOR 1)
+set(Shadow_Server_VERSION_PATCH 0)
+set(Shadow_Server_VERSION_EXTRA "")
+
 include(CheckCXXSourceCompiles)
 
 ######################################################################
@@ -126,7 +131,7 @@ CHECK_CXX_SOURCE_COMPILES("int main() { void* p = nullptr; }"
 	HAVE_NULLPTR
 	FAIL_REGEX "use of undeclared identifier 'nullptr'")
 if(NOT HAVE_NULLPTR)
-	message(FATAL_ERROR "Shadow World server needs nullptr")
+	message(FATAL_ERROR "no `nullptr`")
 endif()
 
 # CHECK_CXX_SOURCE_COMPILES("int main() { const char# f = __PRETTY_FUNCTION__; }")
@@ -145,9 +150,6 @@ CHECK_CXX_SOURCE_COMPILES("int main() { char c1[] = u8\"a\"; char16_t c2[] = u\"
 	FAIL_REGEX "‘u8’ was not declared in this scope"
 	FAIL_REGEX "‘char16_t’ was not declared in this scope"
 	FAIL_REGEX "‘char32_t’ was not declared in this scope")
-if(HAVE_UNICODE_LITERALS)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVE_UNICODE_LITERALS=1")
-endif()
 
 CHECK_CXX_SOURCE_COMPILES("int main() { char s[] = R\"delim(string)delim\"; }"
 	HAVE_RAW_STRING_LITERALS
@@ -155,9 +157,6 @@ CHECK_CXX_SOURCE_COMPILES("int main() { char s[] = R\"delim(string)delim\"; }"
 	FAIL_REGEX "use of undeclared identifier 'R'"
 	# g++
 	FAIL_REGEX "‘R’ was not declared in this scope")
-if(HAVE_RAW_STRING_LITERALS)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVE_RAW_STRING_LITERALS=1")
-endif()
 
 # TODO: Computed gotos?
 
@@ -191,12 +190,28 @@ include(FindBoost)
 
 set(BOOST_ROOT "/usr/local")
 
-find_package(Boost 1.53.0 COMPONENTS system program_options log filesystem)
+find_package(Boost 1.53.0 COMPONENTS program_options log)
+
+if(NOT Boost_LOG_FOUND)
+	message(FATAL_ERROR "Boost.Log not found")
+endif()
 
 if(Boost_FOUND)
-	include_directories(${Boost_INCLUDE_DIRS})
+	include_directories("${Boost_INCLUDE_DIRS}")
+endif()
+
+find_path(
+	Boost_ASIO_PATH
+	NAMES boost/asio.hpp
+	PATHS ${Boost_INCLUDE_DIRS})
+if(Boost_ASIO_PATH STREQUAL "Boost_ASIO_PATH-NOTFOUND")
+	message(FATAL_ERROR "Boost.ASIO not found")
 endif()
 
 ######################################################################
 # Subdirectories
 add_subdirectory(src)
+
+configure_file(
+	"${PROJECT_SOURCE_DIR}/src/host/autoconf.h.in"
+	"${PROJECT_SOURCE_DIR}/src/host/autoconf.h")
