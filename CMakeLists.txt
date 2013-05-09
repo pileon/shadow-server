@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 2.6)
 
 project(Shadow_Server CXX)
 
+set(Shadow_Server_VERSION_MAJOR 0)
+set(Shadow_Server_VERSION_MINOR 1)
+set(Shadow_Server_VERSION_PATCH 0)
+
 include(CheckCXXSourceCompiles)
 
 ######################################################################
