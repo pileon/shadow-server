@@ -54,46 +54,47 @@ if(NOT HAS_FLAG_STD_CXX11)
 	check_cxx_compiler_flag(-std=c++0x     HAS_FLAG_STD_CXX0X)
 endif()
 
-# TODO: Only check for these flags if requested by the user
-check_cxx_compiler_flag(-Wall                HAS_WARNING_ALL)
-check_cxx_compiler_flag(-Wextra              HAS_WARNING_EXTRA)
-check_cxx_compiler_flag(-Weffc++             HAS_WARNING_EFFCXX)
-check_cxx_compiler_flag(-Wconversion         HAS_WARNING_CONVERSION)
-check_cxx_compiler_flag(-Wsign-conversion    HAS_WARNING_SIGN_CONVERSION)
-check_cxx_compiler_flag(-Woverloaded-virtual HAS_WARNING_OVERLOADED_VIRTUAL)
-# check_cxx_compiler_flag(-Weverything         HAS_WARNING_EVERYTHING)
+if(EXTRA_WARNINGS)
+	check_cxx_compiler_flag(-Wall                HAS_WARNING_ALL)
+	check_cxx_compiler_flag(-Wextra              HAS_WARNING_EXTRA)
+	check_cxx_compiler_flag(-Weffc++             HAS_WARNING_EFFCXX)
+	check_cxx_compiler_flag(-Wconversion         HAS_WARNING_CONVERSION)
+	check_cxx_compiler_flag(-Wsign-conversion    HAS_WARNING_SIGN_CONVERSION)
+	check_cxx_compiler_flag(-Woverloaded-virtual HAS_WARNING_OVERLOADED_VIRTUAL)
+	# check_cxx_compiler_flag(-Weverything         HAS_WARNING_EVERYTHING)
 
-check_cxx_compiler_flag(-Wpedantic HAS_WARNING_WPEDANTIC)
-if(NOT HAS_WARNING_WPEDANTIC)
-	check_cxx_compiler_flag(-pedantic HAS_WARNING_PEDANTIC)
-endif()
+	check_cxx_compiler_flag(-Wpedantic HAS_WARNING_WPEDANTIC)
+	if(NOT HAS_WARNING_WPEDANTIC)
+		check_cxx_compiler_flag(-pedantic HAS_WARNING_PEDANTIC)
+	endif()
 
-if(HAS_WARNING_ALL)
-	set(CXX_WARNING_FLAGS "${CXX_WARNING_FLAGS} -Wall")
-endif()
-if(HAS_WARNING_EXTRA)
-	set(CXX_WARNING_FLAGS "${CXX_WARNING_FLAGS} -Wextra")
-endif()
-if(HAS_WARNING_EFFCXX)
-	set(CXX_WARNING_FLAGS "${CXX_WARNING_FLAGS} -Weffc++")
-endif()
-if(HAS_WARNING_CONVERSION)
-	set(CXX_WARNING_FLAGS "${CXX_WARNING_FLAGS} -Wconversion")
-endif()
-if(HAS_WARNING_SIGN_CONVERSION)
-	set(CXX_WARNING_FLAGS "${CXX_WARNING_FLAGS} -Wsign-conversion")
-endif()
-if(HAS_WARNING_OVERLOADED_VIRTUAL)
-	set(CXX_WARNING_FLAGS "${CXX_WARNING_FLAGS} -Woverloaded-virtual")
-endif()
-# if(HAS_WARNING_EVERYTHING)
-# 	set(CXX_WARNING_FLAGS "${CXX_WARNING_FLAGS} -Weverything")
-# endif()
-if(HAS_WARNING_WPEDANTIC)
-	set(CXX_WARNING_FLAGS "${CXX_WARNING_FLAGS} -Wpedantic")
-endif()
-if(HAS_WARNING_PEDANTIC)
-	set(CXX_WARNING_FLAGS "${CXX_WARNING_FLAGS} -pedantic")
+	if(HAS_WARNING_ALL)
+		set(CXX_WARNING_FLAGS "${CXX_WARNING_FLAGS} -Wall")
+	endif()
+	if(HAS_WARNING_EXTRA)
+		set(CXX_WARNING_FLAGS "${CXX_WARNING_FLAGS} -Wextra")
+	endif()
+	if(HAS_WARNING_EFFCXX)
+		set(CXX_WARNING_FLAGS "${CXX_WARNING_FLAGS} -Weffc++")
+	endif()
+	if(HAS_WARNING_CONVERSION)
+		set(CXX_WARNING_FLAGS "${CXX_WARNING_FLAGS} -Wconversion")
+	endif()
+	if(HAS_WARNING_SIGN_CONVERSION)
+		set(CXX_WARNING_FLAGS "${CXX_WARNING_FLAGS} -Wsign-conversion")
+	endif()
+	if(HAS_WARNING_OVERLOADED_VIRTUAL)
+		set(CXX_WARNING_FLAGS "${CXX_WARNING_FLAGS} -Woverloaded-virtual")
+	endif()
+	# if(HAS_WARNING_EVERYTHING)
+	# 	set(CXX_WARNING_FLAGS "${CXX_WARNING_FLAGS} -Weverything")
+	# endif()
+	if(HAS_WARNING_WPEDANTIC)
+		set(CXX_WARNING_FLAGS "${CXX_WARNING_FLAGS} -Wpedantic")
+	endif()
+	if(HAS_WARNING_PEDANTIC)
+		set(CXX_WARNING_FLAGS "${CXX_WARNING_FLAGS} -pedantic")
+	endif()
 endif()
 
 # Initialize CXXFLAGS.
@@ -132,18 +133,32 @@ endif()
 # CHECK_CXX_SOURCE_COMPILES("int main() { const char# f = __FUNCTION__; }")
 # CHECK_CXX_SOURCE_COMPILES("int main() { const char# f = __func__; }")
 
-CHECK_CXX_SOURCE_COMPILES("int main() { char c1 = u8'a'; char16_t c2 = u'a'; char32_t c3 = U'a'; }"
+CHECK_CXX_SOURCE_COMPILES("int main() { char c1[] = u8\"a\"; char16_t c2[] = u\"a\"; char32_t c3[] = U\"a\"; }"
 	HAVE_UNICODE_LITERALS
+	# clang++
 	FAIL_REGEX "use of undeclared identifier 'u8'"
 	FAIL_REGEX "use of undeclared identifier 'u'"
 	FAIL_REGEX "use of undeclared identifier 'U'"
 	FAIL_REGEX "unknown type name 'char16_t'"
-	FAIL_REGEX "unknown type name 'char32_t'")
+	FAIL_REGEX "unknown type name 'char32_t'"
+	# g++
+	FAIL_REGEX "‘u8’ was not declared in this scope"
+	FAIL_REGEX "‘char16_t’ was not declared in this scope"
+	FAIL_REGEX "‘char32_t’ was not declared in this scope")
 if(HAVE_UNICODE_LITERALS)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVE_UNICODE_LITERALS")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVE_UNICODE_LITERALS=1")
 endif()
 
-# TODO: Raw string literals
+CHECK_CXX_SOURCE_COMPILES("int main() { char s[] = R\"delim(string)delim\"; }"
+	HAVE_RAW_STRING_LITERALS
+	# clang++
+	FAIL_REGEX "use of undeclared identifier 'R'"
+	# g++
+	FAIL_REGEX "‘R’ was not declared in this scope")
+if(HAVE_RAW_STRING_LITERALS)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVE_RAW_STRING_LITERALS=1")
+endif()
+
 # TODO: Computed gotos?
 
 ######################################################################
