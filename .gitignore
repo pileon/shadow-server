@@ -11,8 +11,7 @@
 *.la
 *.a
 
-# http://www.gnu.org/software/automake
-Makefile.in
-
 ## Local
 build/
+
+src/host/autoconf.h
