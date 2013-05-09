@@ -95,7 +95,7 @@ endif()
 # CHECK_CXX_SOURCE_COMPILES("int main() { const char* f = __FUNCTION__; }")
 # CHECK_CXX_SOURCE_COMPILES("int main() { const char* f = __func__; }")
 
-CHECK_CXX_SOURCE_COMPILES("int main() { char c1 = u8'a'; char16_t c2 = u'a'; char32_t c3 = U'a'; }"
+CHECK_CXX_SOURCE_COMPILES("int main() { char c1[] = u8\"a\"; char16_t c2[] = u\"a\"; char32_t c3[] = U\"a\"; }"
 	HAVE_UNICODE_LITERALS
 	FAIL_REGEX "use of undeclared identifier 'u8'"
 	FAIL_REGEX "use of undeclared identifier 'u'"
