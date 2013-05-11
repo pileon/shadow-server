@@ -54,6 +54,7 @@ include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag(-std=c++11     HAS_FLAG_STD_CXX11)
 check_cxx_compiler_flag(-stdlib=libc++ HAS_FLAG_STDLIB_LIBCXX)
 check_cxx_compiler_flag(-pipe          HAS_FLAG_PIPE)
+check_cxx_compiler_flag(-pthread       HAS_FLAG_PTHREAD)
 
 if(NOT HAS_FLAG_STD_CXX11)
 	check_cxx_compiler_flag(-std=c++0x     HAS_FLAG_STD_CXX0X)
@@ -117,6 +118,9 @@ if(HAS_FLAG_STDLIB_LIBCXX)
 endif()
 if(HAS_FLAG_PIPE)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe")
+endif()
+if(HAS_FLAG_PTHREAD)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 endif()
 if(HAS_FLAG_STD_CXX0X)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
@@ -190,7 +194,7 @@ include(FindBoost)
 
 set(BOOST_ROOT "/usr/local")
 
-find_package(Boost 1.53.0 COMPONENTS program_options log)
+find_package(Boost 1.53.0 COMPONENTS system program_options log)
 
 if(NOT Boost_LOG_FOUND)
 	message(FATAL_ERROR "Boost.Log not found")
@@ -198,6 +202,7 @@ endif()
 
 if(Boost_FOUND)
 	include_directories("${Boost_INCLUDE_DIRS}")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBOOST_ALL_DYN_LINK")
 endif()
 
 find_path(
