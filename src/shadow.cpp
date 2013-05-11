@@ -45,11 +45,13 @@ namespace
 {
 	bool init(int /*argc*/, char* /*argv*/[])
 	{
+		shadow::log::init();
 		return true;
 	}
 
 	void clean()
 	{
+		shadow::log::clean();
 	}
 }
 

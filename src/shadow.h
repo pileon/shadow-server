@@ -39,6 +39,7 @@
 ******************************************************************* */
 
 #include "host/autoconf.h"
+#include "log.h"
 
 namespace shadow {
 
