@@ -194,7 +194,7 @@ include(FindBoost)
 
 set(BOOST_ROOT "/usr/local")
 
-find_package(Boost 1.53.0 COMPONENTS system program_options log)
+find_package(Boost 1.53.0 COMPONENTS system program_options log thread)
 
 if(NOT Boost_LOG_FOUND)
 	message(FATAL_ERROR "Boost.Log not found")
