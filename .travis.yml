@@ -2,5 +2,6 @@ language: cpp
 compiler:
   - clang
   - gcc
-# Change this to your needs
+before_install:
+  - sudo apt-get install libboost-dev
 script: mkdir build && cd build && cmake -DEXTRA_WARNINGS=Yes .. && make
