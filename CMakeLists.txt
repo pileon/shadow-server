@@ -190,7 +190,7 @@ include(FindBoost)
 
 # set(BOOST_ROOT "/usr/local")
 
-find_package(Boost 1.46.0 COMPONENTS program_options)
+find_package(Boost 1.46 COMPONENTS program_options)
 
 # if(NOT Boost_LOG_FOUND)
 # 	message(FATAL_ERROR "Boost.Log not found")
