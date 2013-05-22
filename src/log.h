@@ -38,6 +38,10 @@
 *                                                                    *
 ******************************************************************* */
 
+#include <boost/iostreams/stream.hpp>
+#include <boost/iostreams/stream_buffer.hpp>
+#include <boost/iostreams/concepts.hpp>
+
 namespace shadow {
 namespace log {
 
@@ -47,6 +51,34 @@ void init();
 void clean();
 
 /* **************************************************************** */
+
+namespace streams
+{
+	class log_sink : public boost::iostreams::sink
+	{
+	public:
+		std::streamsize write(const char* s, std::streamsize n)
+			{
+				// Write up to n characters to the underlying 
+				// data sink into the buffer s, returning the 
+				// number of characters written
+
+				output_.write(s, n);
+
+				return n;
+			}
+
+		log_sink(std::ostream& output) : output_(output)
+			{ }
+		log_sink(const log_sink& other) : output_(other.output_)
+			{ }
+		~log_sink()
+			{ }
+
+	private:
+		std::ostream& output_;
+	};
+} // namespace streams
 
 /* **************************************************************** */
 
