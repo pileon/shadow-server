@@ -78,7 +78,30 @@ namespace streams
 	private:
 		std::ostream& output_;
 	};
+
+	class log_info : public boost::iostreams::stream<log_sink>
+	{
+	public:
+		log_info(std::ostream& output)
+			: boost::iostreams::stream<log_sink>(output),
+			  output_(output)
+			{ *this << "info :: "; }
+		log_info(const log_info& other)
+			: boost::iostreams::stream<log_sink>(other.output_),
+			  output_(other.output_)
+			{ }
+		~log_info()
+			{ *this << std::endl; }
+
+	private:
+		std::ostream& output_;
+	};
 } // namespace streams
+
+inline streams::log_info info()
+{
+	return streams::log_info(std::clog);
+}
 
 /* **************************************************************** */
 
