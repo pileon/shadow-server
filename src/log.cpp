@@ -49,6 +49,9 @@ namespace log {
 
 void init()
 {
+	int x = 321;
+	info() << "Hello " << "first " << "log " << 123 << ' ' << x;
+	info() << "Hello " << "second " << "log " << 123 << ' ' << x;
 }
 
 void clean()
