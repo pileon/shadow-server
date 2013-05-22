@@ -192,13 +192,13 @@ endif()
 
 include(FindBoost)
 
-set(BOOST_ROOT "/usr/local")
+# set(BOOST_ROOT "/usr/local")
 
-find_package(Boost 1.53.0 COMPONENTS system program_options log thread)
+find_package(Boost 1.46 COMPONENTS program_options)
 
-if(NOT Boost_LOG_FOUND)
-	message(FATAL_ERROR "Boost.Log not found")
-endif()
+# if(NOT Boost_LOG_FOUND)
+# 	message(FATAL_ERROR "Boost.Log not found")
+# endif()
 
 if(Boost_FOUND)
 	include_directories("${Boost_INCLUDE_DIRS}")
