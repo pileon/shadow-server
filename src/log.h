@@ -52,6 +52,37 @@ void clean();
 
 /* **************************************************************** */
 
+namespace logging
+{
+	struct basic_logger
+	{
+		virtual void write(const char*, const std::streamsize) = 0;
+	};
+
+	class ostream_logger : public basic_logger
+	{
+	public:
+		ostream_logger(std::ostream& stream)
+			: stream_(stream)
+			{ }
+		ostream_logger(const ostream_logger& other)
+			: stream_(other.stream_)
+			{ }
+
+		void write(const char* s, const std::streamsize n)
+			{
+				stream_.write(s, n);
+			}
+
+		private:
+			std::ostream& stream_;
+	};
+
+	// TODO: class window_system_logger;
+	// TODO: class posix_system_logger;
+	// TODO: Put the above system loggers in the correct `hosts` sub-folder
+}
+
 namespace streams
 {
 	class log_sink : public boost::iostreams::sink
