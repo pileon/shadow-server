@@ -54,18 +54,18 @@ void clean();
 
 namespace logging
 {
-	struct basic_logger
+	struct basic_backend
 	{
 		virtual void write(const char*, const std::streamsize) = 0;
 	};
 
-	class ostream_logger : public basic_logger
+	class ostream_backend : public basic_backend
 	{
 	public:
-		ostream_logger(std::ostream& stream)
+		ostream_backend(std::ostream& stream)
 			: stream_(stream)
 			{ }
-		ostream_logger(const ostream_logger& other)
+		ostream_backend(const ostream_backend& other)
 			: stream_(other.stream_)
 			{ }
 
@@ -82,7 +82,7 @@ namespace logging
 	// TODO: class posix_system_logger;
 	// TODO: Put the above system loggers in the correct `hosts` sub-folder
 
-	using logger_ptr_type = std::shared_ptr<logging::basic_logger>;
+	using logger_ptr_type = std::shared_ptr<logging::basic_backend>;
 	using loggers_type    = std::vector<logger_ptr_type>;
 }
 
@@ -105,6 +105,8 @@ namespace streams
 		log_sink(std::ostream& output) : output_(output)
 			{ }
 		log_sink(const log_sink& other) : output_(other.output_)
+			{ }
+		log_sink(log_sink&& other) : output_(other.output_)
 			{ }
 		~log_sink()
 			{ }
