@@ -4,7 +4,7 @@ compiler:
 before_install:
   - sudo apt-get install libboost-dev libboost-all-dev
 before_script:
-	- mkdir build
-	- cd build
-	- cmake -DEXTRA_WARNINGS=Yes ..
+  - mkdir build
+  - cd build
+  - cmake -DEXTRA_WARNINGS=Yes ..
 script: make
