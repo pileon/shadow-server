@@ -14,4 +14,4 @@
 #define Shadow_Server_VERSION_EXTRA "@Shadow_Server_VERSION_EXTRA@"
 
 #define Shadow_Server_VERSION_TAG \
-	"@Shadow_Server_VERSION_MAJOR@.@Shadow_Server_VERSION_MINOR@.@Shadow_Server_VERSION_PATCH@@hadow_Server_VERSION_MAJOR@"
+	"@Shadow_Server_VERSION_MAJOR@.@Shadow_Server_VERSION_MINOR@.@Shadow_Server_VERSION_PATCH@@hadow_Server_VERSION_EXTRA@"
