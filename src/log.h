@@ -81,6 +81,9 @@ namespace logging
 	// TODO: class window_system_logger;
 	// TODO: class posix_system_logger;
 	// TODO: Put the above system loggers in the correct `hosts` sub-folder
+
+	using logger_ptr_type = std::shared_ptr<logging::basic_logger>;
+	using loggers_type    = std::vector<logger_ptr_type>;
 }
 
 namespace streams

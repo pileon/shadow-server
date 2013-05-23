@@ -36,12 +36,19 @@
 *                                                                    *
 ******************************************************************* */
 
+#include "shadow.h"
 #include "log.h"
+#include <unordered_map>
 
 namespace shadow {
 namespace log {
 
 /* **************************************************************** */
+
+namespace
+{
+	std::unordered_map<std::string, logging::loggers_type> channels;
+}
 
 /* **************************************************************** */
 
@@ -52,6 +59,8 @@ void init()
 	int x = 321;
 	info() << "Hello " << "first " << "log " << 123 << ' ' << x;
 	info() << "Hello " << "second " << "log " << 123 << ' ' << x;
+
+	channels["info"].emplace_back(std::make_shared<logging::ostream_logger>(std::clog));
 }
 
 void clean()
