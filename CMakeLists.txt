@@ -188,13 +188,7 @@ CHECK_CXX_SOURCE_COMPILES("int main() { char s[] = R\"delim(string)delim\"; }"
 
 include(FindBoost)
 
-# set(BOOST_ROOT "/usr/local")
-
 find_package(Boost 1.46.0 REQUIRED COMPONENTS program_options)
-
-# if(NOT Boost_LOG_FOUND)
-# 	message(FATAL_ERROR "Boost.Log not found")
-# endif()
 
 if(Boost_FOUND)
 	include_directories("${Boost_INCLUDE_DIRS}")
