@@ -56,6 +56,58 @@ endif()
 include(CheckCXXSourceCompiles)
 
 ######################################################################
+# Private macros
+
+macro(check_header_file HEADER DESTVAR)
+	message(STATUS "Looking for header file ${HEADER}")
+
+	set(
+		CMAKE_CONFIGURABLE_FILE_CONTENT
+		"#include <${HEADER}>\nint main() {}"
+		)
+
+	configure_file(
+		"${CMAKE_ROOT}/Modules/CMakeConfigurableFile.in"
+		"${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeTmp/CheckHeaderFile.cpp"
+		@ONLY IMMEDIATE
+		)
+
+	set(CHECK_HEADER_FILE_FLAGS ${CMAKE_REQUIRED_FLAGS})
+
+	if(CMAKE_REQUIRED_INCLUDES)
+		set(CHECK_HEADER_FILE_INCLUDE_DIRS "${CMAKE_REQUIRED_INCLUDES}")
+	else()
+		set(CHECK_HEADER_FILE_INCLUDE_DIRS)
+	endif()
+
+	if(${ARGC} GREATER 2)
+		list(APPEND CHECK_HEADER_FILE_INCLUDE_DIRS ${ARGV2})
+	endif()
+
+	if(CHECK_HEADER_FILE_INCLUDE_DIRS)
+		set(CHECK_HEADER_FILE_INCLUDE_DIRS "-DINCLUDE_DIRECTORIES=${CHECK_HEADER_FILE_INCLUDE_DIRS}")
+	endif()
+
+	try_compile(
+		${DESTVAR}
+		${CMAKE_BINARY_DIR}
+		${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeTmp/CheckHeaderFile.cpp
+		COMPILE_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS}
+		CMAKE_FLAGS
+			-DCOMPILE_DEFINITIONS:STRING=${CHECK_HEADER_FILE_FLAGS}
+			"${CHECK_HEADER_FILE_INCLUDE_DIRS}"
+		OUTPUT_VARIABLE OUTPUT
+		)
+
+	if(${DESTVAR})
+		message(STATUS "Looking for header file ${HEADER} - found")
+	else()
+		message(STATUS "Looking for header file ${HEADER} - not found")
+		# message(STATUS "${OUTPUT}")
+	endif()
+endmacro()
+
+######################################################################
 # Flag handling
 include(CheckCXXCompilerFlag)
 
