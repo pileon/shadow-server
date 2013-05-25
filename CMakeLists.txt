@@ -281,6 +281,85 @@ if(NOT LIBCXXABI_NOT_NEEDED)
 endif()
 
 ######################################################################
+
+if(ENABLE_PROFILING)
+	if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+		# If we're using clang, we need to manually link with
+		# <path>/clang/<version>/lib/linux/libclang_rt.profile-<system>.a
+
+		message(STATUS "Performing test LIBCLANG_RT_PROFILE")
+
+		# Create a list of possible locations
+		list(APPEND CLANG_LOCATIONS "/usr/local")
+		list(APPEND CLANG_LOCATIONS "/usr")
+		list(APPEND CLANG_LOCATIONS "/opt")
+
+		# Create a list of possible version variants
+		string(REGEX MATCH
+			"[0-9]+\\.[0-9]+\\.[0-9]+"
+			CLANG_VERSION_3
+			"${CMAKE_CXX_COMPILER_VERSION}"
+		)
+		string(REGEX MATCH
+			"[0-9]+\\.[0-9]+"
+			CLANG_VERSION_2
+			"${CMAKE_CXX_COMPILER_VERSION}"
+		)
+		string(REGEX MATCH
+			"[0-9]+"
+			CLANG_VERSION_1
+			"${CMAKE_CXX_COMPILER_VERSION}"
+		)
+		if (CLANG_VERSION_3)
+			list(APPEND CLANG_VERSION_LIST ${CLANG_VERSION_3})
+		endif()
+		if (CLANG_VERSION_2)
+			list(APPEND CLANG_VERSION_LIST ${CLANG_VERSION_2})
+		endif()
+		if (CLANG_VERSION_1)
+			list(APPEND CLANG_VERSION_LIST ${CLANG_VERSION_1})
+		endif()
+
+		foreach(LOC ${CLANG_LOCATIONS})
+			foreach(VER ${CLANG_VERSION_LIST})
+				find_file(
+					LIBCLANG_RT_PROFILE
+					NAMES libclang_rt.profile-${CMAKE_SYSTEM_PROCESSOR}.a
+					PATHS ${LOC}/lib/clang/${VER}/lib/linux
+				)
+
+
+				if(NOT LIBCLANG_RT_PROFILE MATCHES "-NOTFOUND")
+					message(STATUS "Performing test LIBCLANG_RT_PROFILE - ${LIBCLANG_RT_PROFILE}")
+					break()
+				endif()
+			endforeach()
+
+			if(NOT LIBCLANG_RT_PROFILE MATCHES "-NOTFOUND")
+				break()
+			endif()
+		endforeach()
+
+		if(LIBCLANG_RT_PROFILE MATCHES "-NOTFOUND")
+			message(STATUS "Performing test LIBCLANG_RT_PROFILE - Failed")
+		else()
+			set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${LIBCLANG_RT_PROFILE}")
+			list(APPEND CMAKE_REQUIRED_LIBRARIES "${LIBCLANG_RT_PROFILE}")
+		endif()
+	endif()
+
+	check_cxx_compiler_flag(-fprofile-arcs       HAS_PROFILE_ARCS)
+	check_cxx_compiler_flag(-ftest-coverage      HAS_TEST_COVERAGE)
+
+	if (HAS_PROFILE_ARCS)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs")
+	endif()
+	if (HAS_TEST_COVERAGE)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftest-coverage")
+	endif()
+endif()
+
+######################################################################
 # Subdirectories
 add_subdirectory(src)
 
