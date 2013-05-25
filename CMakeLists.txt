@@ -270,12 +270,14 @@ CHECK_CXX_SOURCE_COMPILES("#include <iostream>\nint main() { std::cout << 'c'; }
 	LIBCXXABI_NOT_NEEDED
 	FAIL_REGEX "undefined reference to symbol '__gxx_personality"
 	FAIL_REGEX "undefined reference to symbol '__cxa_end_catch")
-if(NOT LIBCXXABI_NOT_NEEDED)
-	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lc++abi")
-endif()
 
 if(Boost_FOUND AND TEMP_CMAKE_REQUIRED_LIBRARIES)
     set(CMAKE_REQUIRED_LIBRARIES, ${TEMP_CMAKE_REQUIRED_LIBRARIES})
+endif()
+
+if(NOT LIBCXXABI_NOT_NEEDED)
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lc++abi")
+	list(APPEND CMAKE_REQUIRED_LIBRARIES "c++abi")
 endif()
 
 ######################################################################
