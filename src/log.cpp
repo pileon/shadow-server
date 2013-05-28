@@ -47,7 +47,7 @@ namespace log {
 
 namespace
 {
-	std::unordered_map<std::string, backends::loggers_type> channels;
+	std::unordered_map<std::string, backend::backend_col_type> channels;
 }
 
 /* **************************************************************** */
@@ -56,14 +56,23 @@ namespace
 
 void init()
 {
-	int x = 321;
-	info() << "Hello " << "first " << "log " << 123 << ' ' << x;
-	info() << "Hello " << "second " << "log " << 123 << ' ' << x;
+	// int x = 321;
+	// info() << "Hello " << "first " << "log " << 123 << ' ' << x;
+	// info() << "Hello " << "second " << "log " << 123 << ' ' << x;
 
 	// By default use the `std::clog` output stream for the backend
 	// TODO: The backends have to be configurable at compile-time,
 	//       boot-time and run-time.
-	channels["info"].emplace_back(std::make_shared<backends::ostream_backend>(std::clog));
+	channels["info"].push_back(std::make_shared<backend::ostream_backend>("info", std::clog));
+
+	std::cout << "channels[\"info\"].size() = " << channels["info"].size() << '\n';
+	for (backend::backend_ptr_type& b : channels["info"])
+	{
+		backend::basic_backend* bb = b.get();
+		std::cout << "backend for " << bb->channel() << '\n';
+	}
+
+	// log::info() << "hello world from logging";
 }
 
 void clean()
@@ -72,6 +81,17 @@ void clean()
 }
 
 /* **************************************************************** */
+
+backend::backend_col_type& backend::backends(const std::string& channel)
+{
+	if (channels.find(channel) != channels.end())
+		return channels.at(channel);
+	else
+	{
+		static backend_col_type empty;
+		return empty;
+	}
+}
 
 /* **************************************************************** */
 

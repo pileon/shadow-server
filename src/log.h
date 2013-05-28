@@ -52,22 +52,73 @@ void clean();
 
 /* **************************************************************** */
 
-namespace backends
+namespace backend
 {
-	struct basic_backend
+	class basic_backend
 	{
+	public:
+		basic_backend(const std::string& channel)
+			: channel_(channel)
+			{ }
+
+		virtual ~basic_backend()
+			{ }
+
+		//! Called when starting a logging sequence
+		virtual void start() = 0;
+
+		//! Called when ending a logging sequence
+		virtual void end() = 0;
+
 		virtual void write(const char*, const std::streamsize) = 0;
+
+	// protected:
+		const std::string& channel() const
+			{
+				return channel_;
+			}
+
+	// private:
+		const std::string& channel_;
+	};
+
+	class buffered_backend : public basic_backend
+	{
+	public:
+		void write(const char* s, const std::streamsize)
+			{
+				buffer_ += s;
+			}
+
+	protected:
+		const std::string& buffer() const
+			{
+				return buffer_;
+			}
+
+	private:
+		std::string buffer_;
 	};
 
 	class ostream_backend : public basic_backend
 	{
 	public:
-		ostream_backend(std::ostream& stream)
-			: stream_(stream)
+		ostream_backend(const std::string& channel, std::ostream& stream)
+			: basic_backend(channel),
+			  stream_(stream)
+			{ std::cout << "ostream_backend: channel = '" << channel << "'\n"; }
+		~ostream_backend()
 			{ }
-		ostream_backend(const ostream_backend& other)
-			: stream_(other.stream_)
-			{ }
+
+		void start()
+			{
+				stream_ << "timestamp :: " << channel() << " :: ";
+			}
+
+		void end()
+			{
+				stream_ << std::endl;
+			}
 
 		void write(const char* s, const std::streamsize n)
 			{
@@ -82,61 +133,68 @@ namespace backends
 	// TODO: class posix_system_logger;
 	// TODO: Put the above system loggers in the correct `hosts` sub-folder
 
-	using logger_ptr_type = std::shared_ptr<backends::basic_backend>;
-	using loggers_type    = std::vector<logger_ptr_type>;
+	using backend_ptr_type = std::shared_ptr<backend::basic_backend>;
+	using backend_col_type = std::vector<backend_ptr_type>;
+
+	//! Return the backends for a specific channel
+	backend_col_type& backends(const std::string& channel);
 } // namespace backends
 
-namespace streams
+namespace channel
 {
-	class log_sink : public boost::iostreams::sink
+	namespace sink
 	{
-	public:
+		class sink : public boost::iostreams::sink
+		{
+		public:
+			sink(backend::backend_col_type& backends)
+				: backends_(backends)
+				{ }
+			sink(const sink& other)
+				: backends_(other.backends_)
+				{ }
+
 		std::streamsize write(const char* s, std::streamsize n)
 			{
-				// Write up to n characters to the underlying 
-				// data sink into the buffer s, returning the 
-				// number of characters written
-
-				output_.write(s, n);
+				std::cout << "sink::write(\"" << s << "\", " << n << ")\n";
+				for (auto& backend : backends_)
+					backend->write(s, n);
 
 				return n;
 			}
 
-		log_sink(std::ostream& output) : output_(output)
-			{ }
-		log_sink(const log_sink& other) : output_(other.output_)
-			{ }
-		log_sink(log_sink&& other) : output_(other.output_)
-			{ }
-		~log_sink()
-			{ }
+		private:
+			backend::backend_col_type& backends_;
+		};
+	} // namespace sink
 
-	private:
-		std::ostream& output_;
-	};
-
-	class log_info : public boost::iostreams::stream<log_sink>
+	class info : public boost::iostreams::stream<sink::sink>
 	{
 	public:
-		log_info(std::ostream& output)
-			: boost::iostreams::stream<log_sink>(output),
-			  output_(output)
-			{ *this << "info :: "; }
-		log_info(const log_info& other)
-			: boost::iostreams::stream<log_sink>(other.output_),
-			  output_(other.output_)
-			{ }
-		~log_info()
-			{ *this << std::endl; }
-
-	private:
-		std::ostream& output_;
+		info()
+			: boost::iostreams::stream<sink::sink>(log::backend::backends("info"))
+			{
+				for (auto& backend : log::backend::backends("info"))
+					backend->start();
+			}
+		info(const info&)
+			: boost::iostreams::stream<sink::sink>(log::backend::backends("info"))
+			{
+				for (auto& backend : log::backend::backends("info"))
+					backend->start();
+			}
+		~info()
+			{
+				for (auto& backend : log::backend::backends("info"))
+					backend->end();
+			}
 	};
-} // namespace streams
 
-inline streams::log_info info()
+} // namespace channel
+
+inline channel::info info()
 {
-	return streams::log_info(std::clog);
+	return channel::info{};
 }
 
 /* **************************************************************** */
