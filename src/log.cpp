@@ -47,7 +47,7 @@ namespace log {
 
 namespace
 {
-	std::unordered_map<std::string, logging::loggers_type> channels;
+	std::unordered_map<std::string, backends::loggers_type> channels;
 }
 
 /* **************************************************************** */
@@ -63,7 +63,7 @@ void init()
 	// By default use the `std::clog` output stream for the backend
 	// TODO: The backends have to be configurable at compile-time,
 	//       boot-time and run-time.
-	channels["info"].emplace_back(std::make_shared<logging::ostream_backend>(std::clog));
+	channels["info"].emplace_back(std::make_shared<backends::ostream_backend>(std::clog));
 }
 
 void clean()

@@ -52,7 +52,7 @@ void clean();
 
 /* **************************************************************** */
 
-namespace logging
+namespace backends
 {
 	struct basic_backend
 	{
@@ -82,9 +82,9 @@ namespace logging
 	// TODO: class posix_system_logger;
 	// TODO: Put the above system loggers in the correct `hosts` sub-folder
 
-	using logger_ptr_type = std::shared_ptr<logging::basic_backend>;
+	using logger_ptr_type = std::shared_ptr<backends::basic_backend>;
 	using loggers_type    = std::vector<logger_ptr_type>;
-}
+} // namespace backends
 
 namespace streams
 {
