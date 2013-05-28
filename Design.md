@@ -35,7 +35,6 @@ underlying systems already containing buffers.
 
 Channel
 -------
-
 The channel component is the actual stream that is used to write to from the
 program. A channel can have multiple back-ends. Channel objects are created
 dynamically when something needs to be logged.
