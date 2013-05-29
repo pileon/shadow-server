@@ -1,6 +1,4 @@
-// -*- mode: C++; coding: utf-8 -*-
-#ifndef SHADOW_H_
-#define SHADOW_H_ 1
+// coding: utf-8 -*-
 /* *******************************************************************
 * File: shadow.h                               Part of Shadow Server *
 *                                                                    *
@@ -38,22 +36,55 @@
 *                                                                    *
 ******************************************************************* */
 
-#include "host/autoconf.h"
-
-#include <iostream>
-#include <iomanip>
-#include <vector>
-
+#include "shadow.h"
 #include "log.h"
+#include <unordered_map>
 
 namespace shadow {
+namespace log {
 
 /* **************************************************************** */
 
-int main(int argc, char* argv[]);
+namespace
+{
+	std::unordered_map<std::string, backend::backend_col_type> channels;
+}
 
 /* **************************************************************** */
 
+/* **************************************************************** */
+
+void init()
+{
+	// By default use the `std::clog` output stream for the backend
+	// TODO: The backends have to be configurable at compile-time,
+	//       boot-time and run-time.
+	channels["info" ].emplace_back(std::make_shared<backend::ostream_backend>("info" , std::clog));
+	channels["debug"].emplace_back(std::make_shared<backend::ostream_backend>("debug", std::clog));
+
+	log::info() << "hello world from logging";
+	log::debug() << "Yay" << ' ' << "it works!";
+}
+
+void clean()
+{
+
+}
+
+/* **************************************************************** */
+
+backend::backend_col_type& backend::backends(const std::string& channel)
+{
+	if (channels.find(channel) != channels.end())
+		return channels.at(channel);
+	else
+	{
+		static backend_col_type empty;
+		return empty;
+	}
+}
+
+/* **************************************************************** */
+
+} // namespace log
 } // namespace shadow
-
-#endif // SHADOW_H_

@@ -45,11 +45,13 @@ namespace
 {
 	bool init(int /*argc*/, char* /*argv*/[])
 	{
+		shadow::log::init();
 		return true;
 	}
 
 	void clean()
 	{
+		shadow::log::clean();
 	}
 }
 
@@ -60,8 +62,8 @@ int shadow::main(int argc, char* argv[])
 	if (!init(argc, argv))
 		return 1;
 
-	std::cout << "Hello world\n";
-	std::cout << "Version tag = '" << Shadow_Server_VERSION_TAG << "'\n";
+	// std::cout << "Hello world\n";
+	// std::cout << "Version tag = '" << Shadow_Server_VERSION_TAG << "'\n";
 
  	clean();
 

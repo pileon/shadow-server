@@ -248,6 +248,7 @@ find_package(Boost 1.46.0 REQUIRED COMPONENTS program_options)
 
 if(Boost_FOUND)
 	include_directories("${Boost_INCLUDE_DIRS}")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBOOST_ALL_DYN_LINK")
 endif()
 
 find_path(
