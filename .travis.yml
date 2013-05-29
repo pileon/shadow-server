@@ -6,7 +6,7 @@ before_install:
   - sudo apt-get install libboost-dev libboost-all-dev
   - sudo apt-add-repository "deb http://llvm.org/apt/precise/ llvm-toolchain-precise main"
   - sudo apt-get update
-  - sudo apt-get install clang-3.4 clang-3.4-doc libclang-common-dev libclang-dev libclang1 libclang1-dbg libllvm-3.4-ocaml-dev libllvm3.3 libllvm3.3-dbg lldb-3.4 llvm-3.4 llvm-3.4-dev llvm-3.4-doc llvm-3.4-examples llvm-3.4-runtime
+  - sudo apt-get install clang-3.4 llvm-3.4
 before_script:
   - mkdir build
   - cd build
