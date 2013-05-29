@@ -209,23 +209,12 @@ namespace channel
 	private:
 		const std::string channel_;
 	};
-
-	class info : public basic_channel
-	{
-	public:
-		info()
-			: basic_channel("info")
-			{ }
-		info(const info& other)
-			: basic_channel(other)
-			{ }
-	};
-
 } // namespace channel
 
-inline channel::info info()
+inline channel::basic_channel info()
 {
-	return channel::info{};
+	// TODO: Need to check if the channel is enabled or not
+	return channel::basic_channel{"info"};
 }
 
 /* **************************************************************** */
