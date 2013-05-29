@@ -56,23 +56,12 @@ namespace
 
 void init()
 {
-	// int x = 321;
-	// info() << "Hello " << "first " << "log " << 123 << ' ' << x;
-	// info() << "Hello " << "second " << "log " << 123 << ' ' << x;
-
 	// By default use the `std::clog` output stream for the backend
 	// TODO: The backends have to be configurable at compile-time,
 	//       boot-time and run-time.
-	channels["info"].push_back(std::make_shared<backend::ostream_backend>("info", std::clog));
+	channels["info"].emplace_back(std::make_shared<backend::ostream_backend>("info", std::clog));
 
-	std::cout << "channels[\"info\"].size() = " << channels["info"].size() << '\n';
-	for (backend::backend_ptr_type& b : channels["info"])
-	{
-		backend::basic_backend* bb = b.get();
-		std::cout << "backend for " << bb->channel() << '\n';
-	}
-
-	// log::info() << "hello world from logging";
+	log::info() << "hello world from logging";
 }
 
 void clean()

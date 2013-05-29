@@ -60,7 +60,6 @@ namespace backend
 		basic_backend(const std::string& channel)
 			: channel_(channel)
 			{ }
-
 		virtual ~basic_backend()
 			{ }
 
@@ -78,27 +77,27 @@ namespace backend
 				return channel_;
 			}
 
-	// private:
-		const std::string& channel_;
-	};
-
-	class buffered_backend : public basic_backend
-	{
-	public:
-		void write(const char* s, const std::streamsize)
-			{
-				buffer_ += s;
-			}
-
-	protected:
-		const std::string& buffer() const
-			{
-				return buffer_;
-			}
-
 	private:
-		std::string buffer_;
+		const std::string channel_;
 	};
+
+	// class buffered_backend : public basic_backend
+	// {
+	// public:
+	// 	void write(const char* s, const std::streamsize)
+	// 		{
+	// 			buffer_ += s;
+	// 		}
+
+	// protected:
+	// 	const std::string& buffer() const
+	// 		{
+	// 			return buffer_;
+	// 		}
+
+	// private:
+	// 	std::string buffer_;
+	// };
 
 	class ostream_backend : public basic_backend
 	{
@@ -106,18 +105,21 @@ namespace backend
 		ostream_backend(const std::string& channel, std::ostream& stream)
 			: basic_backend(channel),
 			  stream_(stream)
-			{ std::cout << "ostream_backend: channel = '" << channel << "'\n"; }
+			{ }
+
 		~ostream_backend()
 			{ }
 
 		void start()
 			{
-				stream_ << "timestamp :: " << channel() << " :: ";
+				std::cout << "ostream_backend: start\n";
+				// stream_ << "timestamp :: " << channel() << " :: ";
 			}
 
 		void end()
 			{
-				stream_ << std::endl;
+				std::cout << "ostream_backend: end\n";
+				// stream_ << std::endl;
 			}
 
 		void write(const char* s, const std::streamsize n)
@@ -133,7 +135,7 @@ namespace backend
 	// TODO: class posix_system_logger;
 	// TODO: Put the above system loggers in the correct `hosts` sub-folder
 
-	using backend_ptr_type = std::shared_ptr<backend::basic_backend>;
+	using backend_ptr_type = std::shared_ptr<basic_backend>;
 	using backend_col_type = std::vector<backend_ptr_type>;
 
 	//! Return the backends for a specific channel
@@ -149,16 +151,29 @@ namespace channel
 		public:
 			sink(backend::backend_col_type& backends)
 				: backends_(backends)
-				{ }
+				{
+					std::cout << "sink: constructor\n";
+				}
 			sink(const sink& other)
 				: backends_(other.backends_)
-				{ }
+				{
+					std::cout << "sink: copy constructor\n";
+				}
+			sink(sink&& other)
+				: backends_(other.backends_)
+				{
+					std::cout << "sink: move constructor\n";
+				}
+			~sink()
+				{
+					std::cout << "sink: destructor\n";
+				}
 
 		std::streamsize write(const char* s, std::streamsize n)
 			{
 				std::cout << "sink::write(\"" << s << "\", " << n << ")\n";
-				for (auto& backend : backends_)
-					backend->write(s, n);
+				// for (auto& backend : backends_)
+				// 	backend->write(s, n);
 
 				return n;
 			}
@@ -174,17 +189,23 @@ namespace channel
 		info()
 			: boost::iostreams::stream<sink::sink>(log::backend::backends("info"))
 			{
+				std::cout << "info: constructor\n";
 				for (auto& backend : log::backend::backends("info"))
 					backend->start();
 			}
 		info(const info&)
 			: boost::iostreams::stream<sink::sink>(log::backend::backends("info"))
 			{
-				for (auto& backend : log::backend::backends("info"))
-					backend->start();
+				std::cout << "info: copy constructor\n";
+			}
+		info(info&&)
+			: boost::iostreams::stream<sink::sink>(log::backend::backends("info"))
+			{
+				std::cout << "info: move constructor\n";
 			}
 		~info()
 			{
+				std::cout << "info: destructor\n";
 				for (auto& backend : log::backend::backends("info"))
 					backend->end();
 			}
