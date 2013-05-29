@@ -41,6 +41,7 @@
 #include "host/autoconf.h"
 
 #include <iostream>
+#include <iomanip>
 #include <vector>
 
 #include "log.h"

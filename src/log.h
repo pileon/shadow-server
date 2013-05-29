@@ -114,7 +114,7 @@ namespace backend
 
 		void start()
 			{
-				stream_ << timestamp() << " :: " << channel() << " :: ";
+				stream_ << timestamp << " :: " << channel() << " :: ";
 			}
 
 		void end()
@@ -133,9 +133,12 @@ namespace backend
 		private:
 			std::ostream& stream_;
 
-			const std::string timestamp() const
+			static std::ostream& timestamp(std::ostream& os)
 				{
-					return "timestamp";
+					std::time_t now = std::time(nullptr);
+					std::tm tm = *std::localtime(&now);
+					os << std::put_time(&tm, "%F %T");
+					return os;
 				}
 	};
 
