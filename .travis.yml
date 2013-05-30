@@ -1,16 +1,16 @@
 language: cpp
 compiler:
-  - gcc
   - clang
 before_install:
   - sudo apt-get install libboost-dev libboost-all-dev
   - sudo apt-add-repository "deb http://llvm.org/apt/precise/ llvm-toolchain-precise main"
   - sudo apt-get update
   - sudo apt-get install --force-yes clang-3.4 llvm-3.4
+  - find /opt /usr/bin /usr/local/bin -name 'clang*'
 before_script:
   - mkdir build
   - cd build
-  - cmake -DEXTRA_WARNINGS=Yes ..
+  - CC=clang-3.4 CXX=clang++-3.4 cmake -DEXTRA_WARNINGS=Yes ..
 script: make
 #after_script:
 #  - make test
