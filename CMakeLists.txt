@@ -191,6 +191,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_WARNING_FLAGS}")
 ######################################################################
 # TODO: Other compiler specifics (`nullptr` etc.)
 
+set(CMAKE_REQUIRED_FLAGS "${CMAKE_CXX_FLAGS}")
+
 CHECK_CXX_SOURCE_COMPILES("int main() { void* p = nullptr; }"
 	HAVE_NULLPTR
 	FAIL_REGEX "use of undeclared identifier 'nullptr'")
