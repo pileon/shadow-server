@@ -7,10 +7,11 @@ before_install:
   - sudo apt-get update
   - sudo apt-get install --force-yes clang-3.4 llvm-3.4
   - find /opt /usr/bin /usr/local/bin -name 'clang*'
+  - /usr/local/bin/clang++ --version
 before_script:
   - mkdir build
   - cd build
-  - CC=clang-3.4 CXX=clang++-3.4 cmake -DEXTRA_WARNINGS=Yes ..
+  - CC=/usr/local/bin/clang CXX=/usr/local/bin/clang++ cmake -DEXTRA_WARNINGS=Yes ..
 script: make
 #after_script:
 #  - make test
