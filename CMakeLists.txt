@@ -54,6 +54,7 @@ if(NOT Shadow_Server_VERSION_EXTRA)
 endif()
 
 include(CheckCXXSourceCompiles)
+include(CheckLibraryExists)
 
 ######################################################################
 # Private macros
@@ -174,7 +175,12 @@ if(HAS_FLAG_STD_CXX11)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 endif()
 if(HAS_FLAG_STDLIB_LIBCXX)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+    # Check that libc++ actually exists
+	CHECK_LIBRARY_EXISTS(c++ "std::transform" "" HAVE_LIBCXX)
+	message("HAVE_LIBCXX = ${HAVE_LIBCXX}")
+	if(HAVE_LIBCXX)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+	endif()
 endif()
 if(HAS_FLAG_PIPE)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe")
