@@ -54,6 +54,7 @@ if(NOT Shadow_Server_VERSION_EXTRA)
 endif()
 
 include(CheckCXXSourceCompiles)
+include(CheckLibraryExists)
 
 ######################################################################
 # Private macros
