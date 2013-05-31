@@ -179,7 +179,7 @@ if(HAS_FLAG_STDLIB_LIBCXX)
 	CHECK_CXX_SOURCE_COMPILES(
 		"int main() { }"
 		HAVE_LIBCXX
-		FAIL_REGEX "cannot find -lc++")
+		FAIL_REGEX "cannot find -lc")
 	message("HAVE_LIBCXX = ${HAVE_LIBCXX}")
 	if(HAVE_LIBCXX)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
