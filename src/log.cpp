@@ -61,9 +61,6 @@ void init()
 	//       boot-time and run-time.
 	channels["info" ].emplace_back(std::make_shared<backend::ostream_backend>("info" , std::clog));
 	channels["debug"].emplace_back(std::make_shared<backend::ostream_backend>("debug", std::clog));
-
-	log::info() << "hello world from logging";
-	log::debug() << "Yay" << ' ' << "it works!";
 }
 
 void clean()

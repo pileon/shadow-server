@@ -62,8 +62,8 @@ int shadow::main(int argc, char* argv[])
 	if (!init(argc, argv))
 		return 1;
 
-	// std::cout << "Hello world\n";
-	// std::cout << "Version tag = '" << Shadow_Server_VERSION_TAG << "'\n";
+	log::info() << "hello world from logging";
+	log::debug() << "Yay" << ' ' << "it works!";
 
  	clean();
 
