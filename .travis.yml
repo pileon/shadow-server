@@ -9,8 +9,7 @@ before_install:
 before_script:
   - mkdir build
   - cd build
-  - CC=/usr/bin/clang CXX=/usr/bin/clang++ cmake -DEXTRA_WARNINGS=Yes ..
-  - cat CMakeFiles/CMakeError.log
+  - CC=/usr/bin/clang CXX=/usr/bin/clang++ cmake -DEXTRA_WARNINGS=Yes .. || cat CMakeFiles/CMakeError.log
 script: make
 #after_script:
 #  - make test
