@@ -54,7 +54,6 @@ if(NOT Shadow_Server_VERSION_EXTRA)
 endif()
 
 include(CheckCXXSourceCompiles)
-include(CheckLibraryExists)
 
 ######################################################################
 # Private macros
@@ -176,11 +175,14 @@ if(HAS_FLAG_STD_CXX11)
 endif()
 if(HAS_FLAG_STDLIB_LIBCXX)
     # Check that libc++ actually exists
-	CHECK_LIBRARY_EXISTS(c++ "std::transform" "" HAVE_LIBCXX)
+	# CHECK_CXX_SOURCE_COMPILES(
+	# 	"int main() { }"
+	# 	HAVE_LIBCXX
+	# 	FAIL_REGEX "use of undeclared identifier 'nullptr'")
 	message("HAVE_LIBCXX = ${HAVE_LIBCXX}")
-	if(HAVE_LIBCXX)
+	# if(HAVE_LIBCXX)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
-	endif()
+	# endif()
 endif()
 if(HAS_FLAG_PIPE)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe")
