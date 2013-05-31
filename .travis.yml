@@ -9,9 +9,8 @@ before_install:
   - svn co http://llvm.org/svn/llvm-project/libcxx/trunk libcxx
   - mkdir libcxx/build
   - cd libcxx/build
-  - echo | g++ -Wp,-v -x c++ - -fsyntax-only
-  - CC=/usr/bin/clang CXX=/usr/bin/clang++ cmake -G "Unix Makefiles" -DLIBCXX_CXX_ABI=libsupc++ -DLIBCXX_LIBSUPCXX_INCLUDE_PATHS="/usr/include/c++/4.6/;/usr/include/c++/4.6/x86_64-linux-gnu/;/usr/lib/gcc/x86_64-linux-gnu/4.6/include" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr ..
-  - make
+  - CC=/usr/bin/clang CXX=/usr/bin/clang++ cmake -G "Unix Makefiles" -DLIBCXX_CXX_ABI=libsupc++ -DLIBCXX_LIBSUPCXX_INCLUDE_PATHS="/usr/include/c++/4.6/;/usr/include/c++/4.6/x86_64-linux-gnu/" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr ..
+  - make CFLAGS="-I/usr/include/c++/4.6 -I/usr/include/c++/4.6/x86_64-linux-gnu -I/usr/lib/gcc/x86_64-linux-gnu/4.6/include/" CXXFLAGS="-I/usr/include/c++/4.6 -I/usr/include/c++/4.6/x86_64-linux-gnu -I/usr/lib/gcc/x86_64-linux-gnu/4.6/include/"
   - sudo make install
 before_script:
   - mkdir build
